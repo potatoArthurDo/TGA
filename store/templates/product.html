@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<br>
+{% if product %}
+<div class="container-fluid">
+    <div class="row w-75">
+        <!-- product image -->
+         <div class="col-md-6 p-0">
+            <img src="{{ product.image.url }}" alt="Product Image" class="product-image img-fluid">
+         </div>
+
+         <!-- right side -->
+          <div class="col-md-6 column-container bg-white">
+            <div class="p-5 m-0 m-md-5">
+            <h3>{{ product.name }}</h3>
+            <p>{{product.description}}</p>
+            <p>{{product.price}} VND</p>
+
+            <div class="d-flex gap-3">
+                <button class="btn btn-lg btn-primary">Buy now</button>
+                <button class="btn btn-lg btn-outline-secondary">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
