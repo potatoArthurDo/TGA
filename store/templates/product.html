@@ -8,7 +8,7 @@
     <div class="row w-75">
         <!-- product image -->
          <div class="col-md-6 p-0">
-            <img src="{{ product.image.url }}" alt="Product Image" class="product-image img-fluid">
+            <img src="{{ product.image.url }}" alt="Product Image" class="product-image img-fluid" style="width: 500px; height: 700px;">
          </div>
 
          <!-- right side -->
@@ -18,13 +18,62 @@
             <p>{{product.description}}</p>
             <p>{{product.price}} VND</p>
 
+          
+                <div class="col-md-2">Quantity:</div>
+                            <div class="col-md-2">
+                            <select class="form-select form-select-sm" id="qty-cart">
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                            </div>
+                            <br>
+                        
             <div class="d-flex gap-3">
+
                 <button class="btn btn-lg btn-primary">Buy now</button>
-                <button class="btn btn-lg btn-outline-secondary">Add to Cart</button>
+                <button class="btn btn-lg btn-outline-secondary" type="button" value="{{product.id}}" id="add-cart">Add to Cart</button>
             </div>
           </div>
         </div>
     </div>
 </div>
+<script>
+    //check if the button is clicked
+    $(document).on('click', '#add-cart', function(e) {
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'cart_add' %}",  // Ensure this URL matches your Django URL configuration
+        data: {
+            product_id: $('#add-cart').val(),
+            product_qty: $('#qty-cart option:selected').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',  // Use Django's CSRF token
+            action: 'post'
+        },
+        success: function(json) {
+            console.log('Server response:', json);
+            // Update the cart quantity displayed on the page
+            document.getElementById("cart_quantity").textContent = json.qty;
+
+            // Optionally update the cart total if returned
+            if (json.total) {
+                document.getElementById("cart_total").textContent = json.total.toFixed(2); // Assuming total is sent back
+                
+            }
+            location.reload();
+        },
+        error: function(xhr, errmsg, err) {
+            // Handle error
+            console.error("Error: " + xhr.status + ": " + xhr.responseText);
+            alert("An error occurred while adding the item to the cart.");
+        }
+    });
+});
+
+
+</script>
 {% endif %}
 {% endblock %}

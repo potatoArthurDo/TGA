@@ -1,7 +1,11 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
 
 <div class="container mt-4">
     <h1 class="mb-4">Your Shopping Cart</h1>
+    {% if cart_products %}
+    {% for product in cart_products %}
 <div
   class="row align-items-center"
   style="
@@ -12,32 +16,74 @@
   "
 >
   <div class="col-md-2">
+    <a href="{% url 'product' product.id %}">
     <img
-      src="{% static 'images/product-item-1.jpg' %}"
+      src="{{product.image.url}}"
       alt="Product 1"
       style="max-width: 100px; /* Limit image size */ height: auto"
-    />
+    /></a>
   </div>
   <div class="col-md-6">
-    <h5>Product Name 1</h5>
-    <p>Description of the product goes here.</p>
+    <a href="{% url 'product' product.id %}"><h5>{{product.name}}</h5></a>
+    <p>{{product.price}} VND</p>
   </div>
   <div class="col-md-2">
-    <input type="number" class="form-control" value="1" min="1" />
-  </div>
-  <div class="col-md-2 text-end">
-    <a href="#"><i class="fa-solid fa-x"></i></a>
-  </div>
+    <select class="form-select form-select-sm" id="select{{product.id}}">
+      
+{% for key, value in quantities.items %}
+    {% if key == product.id|slugify %}
+<option selected>{{ value }}</option>
+    {% endif %}
+{% endfor %}
+               
 
-  <div class="d-flex justify-content-between mt-4">
-    <h4>Total:</h4>
-    <h4>$100.00</h4>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    </div>
+  
+  <div class="col-md-2 text-end">
+    <button type="button" class="btn btn-sm delete-product" data-index ="{{product.id}}"><i class="fa-solid fa-x"></i></button>
+  </div>
+  
+
+ 
 </div>
+{% endfor %}
+{% endif %}
+<div class="d-flex justify-content-between mt-4">
+    <h4>Total:</h4>
+    <h4>{{totals}} VND </h4>
 </div>
 <!-- Checkout Button -->
 <div class="text-end mt-4">
-    <button class="btn btn-primary">Proceed to Checkout</button>
+    <a href="{% url 'checkout' %}"><button class="btn btn-primary">Proceed to Checkout</button></a>
 </div>
 </div>
+<script>
+    //Delete from cart
+    $(document).on('click', '.delete-product', function(e) {
+        e.preventDefault();
 
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cart_delete' %}",  // Ensure this URL matches your Django URL configuration
+            data: {
+                product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',  // Use Django's CSRF token
+                action: 'post'
+            },
+            success: function(json) {
+                console.log(json)
+                // Handle the response from the server (e.g., show a success message)
+                location.reload();
+            },
+            error: function(xhr, errmsg, err) {
+            }
+        });
+    })
+</script>
 {% endblock %}

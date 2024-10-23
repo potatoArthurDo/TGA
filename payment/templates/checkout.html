@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Checkout</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ shipping_form.as_p }}
+    <button type="submit">Checkout</button>
+</form>
+{% endblock %}

@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
   <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
   <script src="https://kit.fontawesome.com/8f0c550417.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -152,51 +153,12 @@
       </svg>
       <div class="preloader text-white fs-6 text-uppercase overflow-hidden"></div>
   
-    <div class="search-popup">
-      <div class="search-popup-container">
-  
-        <form role="search" method="get" class="form-group" action="">
-          <input type="search" id="search-form" class="form-control border-0 border-bottom"
-            placeholder="Type and press enter" value="" name="s" />
-          <button type="submit" class="search-submit border-0 position-absolute bg-white"
-            style="top: 15px;right: 15px;"><svg class="search" width="24" height="24">
-              <use xlink:href="#search"></use>
-            </svg></button>
-        </form>
-  
-        <h5 class="cat-list-title">Browse Categories</h5>
-  
-        <ul class="cat-list">
-          <li class="cat-list-item">
-            <a href="#" title="Jackets">Jackets</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="T-shirts">T-shirts</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="Handbags">Handbags</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="Accessories">Accessories</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="Cosmetics">Cosmetics</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="Dresses">Dresses</a>
-          </li>
-          <li class="cat-list-item">
-            <a href="#" title="Jumpsuits">Jumpsuits</a>
-          </li>
-        </ul>
-  
-      </div>
-    </div>
+    
   
     
     
     {% if messages %}
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <div class="alert alert-dismissible fade show " role="alert" style="position: sticky; top: 0; z-index: 1000; background-color: #fff;">
         {% for message in messages %}
             {{message}}
         {% endfor %}
@@ -353,9 +315,9 @@
 <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/plugins.js' %}"></script>
     <script src="{% static 'js/SmoothScroll.js' %}"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-      crossorigin="anonymous"></script> -->
+      crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="{% static 'js/script.min.js' %}"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

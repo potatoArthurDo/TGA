@@ -4,8 +4,20 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm
+from django.db.models import Q
 # Create your views here.
 
+def search(request):
+    if request.method == 'GET':
+        searched = request.GET['searched_product']
+        searched_product = Product.objects.filter(Q(name__contains = searched) | Q(description__contains = searched))
+        if not searched_product:
+            messages.error(request, 'Product does not exist')
+
+        return render(request, 'search.html', {'searched_product': searched_product, 'searched': searched})
+    else:
+        return render(request, 'search.html', {})
+    
 def category(request, foo):
     # Replace hyphens what spaces
     foo = foo.replace('-', ' ')
