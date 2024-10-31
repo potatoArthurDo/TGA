@@ -31,7 +31,7 @@
                   </div>
                   <div class="banner-content py-4">
                     <h5 class="element-title text-uppercase">
-                      <a href="index.html" class="item-anchor">{{ product.name }}</a>
+                      <a href="{% url 'product' product.id %}" class="item-anchor">{{ product.name }}</a>
                     </h5>
                     <p>{{product.description}}</p>
                     <div class="btn-left">

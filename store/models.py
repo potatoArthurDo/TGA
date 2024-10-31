@@ -21,6 +21,7 @@ class Profile(models.Model):
     country = models.CharField(max_length=200, blank = True)
     default = models.BooleanField(default = False)
     type_of_address = models.CharField(max_length=200, choices=ADDRESS_CHOICES, default='home')
+    items_in_cart = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.user.email

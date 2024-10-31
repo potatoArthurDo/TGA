@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm
 from django.db.models import Q
+from payment.models import ShippingAdress
+from payment.forms import ShippingAdressForm
 # Create your views here.
 
 def search(request):
@@ -62,17 +64,21 @@ def update_info(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id = request.user.id)
         update_form = UpdateUserInfoForm(request.POST or None, instance=current_user)
-        if update_form.is_valid():
-            update_form.save()
 
-            login(request, current_user)
+        #User's shipping info
+        shipping_user = ShippingAdress.objects.get(user__id = request.user.id)
+        #Get the shipping form too
+        shipping_form = ShippingAdressForm(request.POST or None, instance=shipping_user)
+        if update_form.is_valid() or shipping_form.is_valid():
+            update_form.save()
+            shipping_form.save()
             messages.success(request, 'Your profile has been updated successfully')
             return redirect('home')
-        else:
-            return render(request, 'update_info.html', {'update_form': update_form})
+        return render(request, 'update_info.html', {'update_form': update_form, 'shipping_form': shipping_form})
     else:
         messages.error(request, 'You must be logged in to view this page')
         return redirect('home')
+    
 def register_user(request):
     form = SignUpForm()
     if request.method == 'POST':
@@ -88,7 +94,7 @@ def register_user(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, 'Registeration successful')
-            return redirect('login_user')
+            return redirect('update_info')
         else:
             messages.error(request, 'Unsuccessful registration. Invalid information')
             return redirect('register_user')

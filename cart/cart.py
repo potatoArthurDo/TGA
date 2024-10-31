@@ -35,8 +35,8 @@ class Cart():
 			# Convert {'3':1, '2':4} to {"3":1, "2":4}
 			carty = str(self.cart)
 			carty = carty.replace("\'", "\"")
-			# # Save carty to the Profile Model
-			# current_user.update(old_cart=str(carty))
+			# Save carty to the Profile Model
+			current_user.update(items_in_cart=str(carty))
 
 
 	def add(self, product, quantity):
@@ -58,8 +58,8 @@ class Cart():
 			# Convert {'3':1, '2':4} to {"3":1, "2":4}
 			carty = str(self.cart)
 			carty = carty.replace("\'", "\"")
-			# # Save carty to the Profile Model
-			# current_user.update(old_cart=str(carty))
+			# Save carty to the Profile Model
+			current_user.update(items_in_cart=str(carty))
 
 	def cart_total(self):
 		# Get product IDS
@@ -122,8 +122,8 @@ class Cart():
 			# Convert {'3':1, '2':4} to {"3":1, "2":4}
 			carty = str(self.cart)
 			carty = carty.replace("\'", "\"")
-			# # Save carty to the Profile Model
-			# current_user.update(old_cart=str(carty))
+			# Save carty to the Profile Model
+			current_user.update(items_in_cart=str(carty))
 
 
 		thing = self.cart
@@ -144,5 +144,5 @@ class Cart():
 			# Convert {'3':1, '2':4} to {"3":1, "2":4}
 			carty = str(self.cart)
 			carty = carty.replace("\'", "\"")
-			# # Save carty to the Profile Model
-			# current_user.update(old_cart=str(carty))
+			# Save carty to the Profile Model
+			current_user.update(items_in_cart=str(carty))

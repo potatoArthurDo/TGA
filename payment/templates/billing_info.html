@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 d-flex">
+          <div class="card w-100">
+            <div class="card-header bg-secondary text-white text-center">
+              <h4>Order Summary</h4>
+            </div>
+  
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-end">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for product in products %}
+                  
+                  <tr>
+                    <td>{{product.name}}</td>
+                    {% for key,value in quantities.items %}
+                    {% if key == product.id|slugify %}
+                    <td class="text-center">{{value}}</td>
+                    {% endif %}
+                    {% endfor %}
+                    <td class="text-end">{{product.price}} VND</td>
+                  </tr>
+                  
+                  {% endfor %}
+                </tbody>
+  
+                <tfoot>
+                  <tr>
+                    <td><strong>Subtotal</strong></td>
+                    <td></td>
+                    <td class="text-end">{{totals}} VND</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Shipping</strong></td>
+                    <td></td>
+                    <td class="text-end">0 VND</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Total</strong></td>
+                    <td></td>
+                    <td class="text-end"><strong> {{totals}} VND</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+  
+              <div class="d-grid gap-2">
+  
+                <a href="{% url 'cart_summary' %}" class="btn btn-outline-secondary">Back to Cart</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- </div> -->
+      <br><br>
+    <!-- <div class="row justify-content-center"> -->
+        <div class="col-md-5 d-flex">
+            <div class="card w-100">
+          <div class="card-header bg-secondary text-white text-center">
+            <h4>Shipping Information</h4>
+          </div>
+          <div class="card-body">
+            <form method="POST" >
+              {% csrf_token %}
+              <div class="mb-3">
+                {{ shipping_form.shipping_full_name }}
+              </div>
+
+              <div class="mb-3">
+                {{ shipping_form.shipping_email }}
+              </div>
+
+              <div class="mb-3">
+                {{ shipping_form.shipping_address1 }}
+              </div>
+              <div class="mb-3">
+                  {{ shipping_form.shipping_address2 }}
+                </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  {{ shipping_form.shipping_city }}
+                </div>
+                <div class="col-md-6 mb-3">
+                  {{ shipping_form.shipping_country }}
+                </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-6 mb-3">
+                      {{ shipping_form.shipping_ward }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      {{ shipping_form.shipping_district }}
+                    </div>
+              </div>
+
+              <div class="d-grid gap-2">
+                <a href="{% url 'checkout' %}" class="btn btn-outline-secondary">Update Shipping Information</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+              <h4>Billing Information</h4>
+            </div>
+  
+            <div class="card-body">
+              <form method="POST" action="{% url 'process_payment' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                  {{ billing_form.card_name }}
+                </div>
+  
+                <div class="mb-3">
+                    {{ billing_form.card_number }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ billing_form.card_expiration }}
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        {{ billing_form.card_cvv }}
+                      </div>
+                </div>
+                <div class="mb-3">
+                    {{ billing_form.card_address }}
+                </div>
+  
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    {{ billing_form.card_city }}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    {{ billing_form.card_country }}
+                  </div>
+                </div>
+  
+                
+  
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary">Pay Now!!</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+{% endblock %}
