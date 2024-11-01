@@ -174,35 +174,30 @@
         <div class="order-md-last">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-primary">Your cart</span>
-                <span class="badge bg-primary rounded-pill">3</span>
+                <span class="badge bg-primary rounded-pill">{{cart|length}}</span>
             </h4>
             <ul class="list-group mb-3">
+              {% if cart_products %}
+                {% for product in cart_products %}
                 <li class="list-group-item d-flex justify-content-between lh-sm">
                     <div>
-                        <h6 class="my-0">Growers cider</h6>
-                        <small class="text-body-secondary">Brief description</small>
+                        <h6 class="my-0">{{product.name}}</h6>
+                        <small class="text-body-secondary">{{product.description}}</small>
                     </div>
-                    <span class="text-body-secondary">$12</span>
+                    <span class="text-body-secondary"> {{product.price}} VND</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0">Fresh grapes</h6>
-                        <small class="text-body-secondary">Brief description</small>
-                    </div>
-                    <span class="text-body-secondary">$8</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0">Heinz tomato ketchup</h6>
-                        <small class="text-body-secondary">Brief description</small>
-                    </div>
-                    <span class="text-body-secondary">$5</span>
-                </li>
+                {% endfor %}
                 <li class="list-group-item d-flex justify-content-between">
-                    <span>Total (USD)</span>
-                    <strong>$20</strong>
+                    <span>Total (VND)</span>
+                    <strong>{{totals}}</strong>
                 </li>
+                {% else %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <h5>Your cart is empty</h5>
+                </li>
+                
             </ul>
+            {% endif %}
             <button class="w-100 btn btn-primary btn-lg" type="button">Continue to Checkout</button>
             <h6 class="text-center">Or</h6>
             <a href="{% url 'cart_summary' %}">

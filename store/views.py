@@ -7,6 +7,7 @@ from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm
 from django.db.models import Q
 from payment.models import ShippingAdress
 from payment.forms import ShippingAdressForm
+from cart.cart import Cart
 # Create your views here.
 
 def search(request):

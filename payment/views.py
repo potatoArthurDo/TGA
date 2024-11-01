@@ -156,4 +156,13 @@ def handle_order(request,pk):
         return redirect('home')
 
 def order_details(request,pk):
-    return render(request, 'order_details.html', {})
+    #Get the right order
+    if request.user.is_authenticated and request.user.is_superuser:
+        order = Order.objects.get(id = pk)
+        items = OrderItem.objects.filter(order= pk)
+
+
+        return render(request, 'order_details.html', {'order': order, 'items': items})
+    else:
+        messages.error(request, 'Access Denined')
+        return redirect('home')
