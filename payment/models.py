@@ -41,6 +41,7 @@ class Order(models.Model):
     shipping_address = models.TextField(max_length=15000)
     amount_paid = models.DecimalField(max_digits=15, decimal_places=0)
     date_ordered = models.DateTimeField(auto_now_add=True)
+
     date_delivered = models.DateTimeField(null=True, blank=True)
     shipped = models.BooleanField(default=False)
 
@@ -57,7 +58,7 @@ def set_shipping_date(sender, instance, created, **kwargs):
             instance.date_delivered = now
 
 class OrderItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 

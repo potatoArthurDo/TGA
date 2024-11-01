@@ -4,6 +4,7 @@ from .models import ShippingAdress, Order, OrderItem
 from .forms import ShippingAdressForm, PaymentForm
 from django.contrib import messages
 from store.models import Profile
+import datetime
 
 # Create your views here.
 def checkout(request):
@@ -111,7 +112,7 @@ def process_payment(request):
                 price = product.price
                 for key,value in quantities().items():
                     if int(key) == product_id:
-                        create_order_item = OrderItem.objects.create(order_id = order_id, user = user, product_id = product_id, quantity = value, price =price )
+                        create_order_item = OrderItem.objects.create(order_id = order_id, product_id = product_id, quantity = value, price =price )
                         create_order_item.save()
 
             #Clear the cart
@@ -122,3 +123,37 @@ def process_payment(request):
             
             messages.success(request, 'Payment Completed')
             return redirect('home')
+        
+def order_dashboard(request):
+    
+    if request.user.is_authenticated and request.user.is_superuser:
+        #Get all the orders
+        orders = Order.objects.all()
+
+        return render(request, 'order_dashboard.html', {'orders': orders})
+    
+def handle_order(request,pk):
+    if request.user.is_authenticated and request.user.is_superuser:
+        #Get the right order
+        order = Order.objects.get(id = pk)
+
+        if request.POST:
+            status = request.POST['shipping_status']
+            if status == 'true':
+                #Get the order
+                order = Order.objects.filter(id = pk)
+                #Update ordeer status
+                now = datetime.datetime.now()
+                order.update(shipped=True, date_delivered=now)
+            else:
+                #Get the order
+                order = Order.objects.filter(id = pk)
+                order.update(shipped=False)
+            messages.success(request, 'Order Status Updated')
+            return redirect('order_dashboard')
+    else:
+        messages.error(request, 'Access Denined')
+        return redirect('home')
+
+def order_details(request,pk):
+    return render(request, 'order_details.html', {})
