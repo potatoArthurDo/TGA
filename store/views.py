@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Profile, Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -8,7 +8,19 @@ from django.db.models import Q
 from payment.models import ShippingAdress
 from payment.forms import ShippingAdressForm
 from cart.cart import Cart
+from wishlist.models import Wishlist
 # Create your views here.
+
+#Handling stock quantities
+
+def user_profile(request,pk):
+    
+    if request.user.is_authenticated:
+        user = User.objects.get(id = pk)
+        return render(request, 'user_profile.html', {'user': user})
+    else:
+        messages.error(request, 'You must be logged in to view this page')
+        return redirect('home')
 
 def search(request):
     if request.method == 'GET':
@@ -38,8 +50,14 @@ def all_categories(request):
     return render(request, 'all_categories.html', {'categories': categories})
 
 def product(request, pk):
-    product = Product.objects.get(id = pk)
-    return render(request, 'product.html', {'product': product})
+    product = get_object_or_404(Product, id=pk)
+    #Check if the product is in the wishlist
+    in_wishlist = False
+    if request.user.is_authenticated:
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        in_wishlist = wishlist.products.filter(id=product.id).exists()
+    return render(request, 'product.html', {'product': product, "in_wishlist": in_wishlist})
+
 def change_password(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id = request.user.id)
@@ -131,9 +149,14 @@ def logout_user(request):
     return redirect('home')
 
 def home(request):
+    if request.user.is_authenticated:
+        user_id = request.user.id
+    else:
+        user_id = None  # or handle it in a way that suits your application
+
     products = Product.objects.all()
     categories = Category.objects.all()
     return render(request, 'home.html', {"products": products, 'categories': categories})
 
-def about(reuqest):
-    return render(reuqest, 'about.html', {})
+def about(request):
+    return render(request, 'about.html', {})

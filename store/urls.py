@@ -14,7 +14,7 @@ urlpatterns = [
     path('category/<str:foo>', views.category, name = 'category'),
     path('all_categories/', views.all_categories, name = 'all_categories'),
     path('search/', views.search, name = 'search'),
-
+    path('user_profile/<int:pk>', views.user_profile, name = 'user_profile'),
 
 
 
