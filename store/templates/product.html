@@ -1,0 +1,150 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<br />
+{% if product %}
+<div class="container-fluid">
+  <div class="row w-75">
+    <!-- product image -->
+    <div class="col-md-6 p-0">
+      <img
+        src="{{ product.image.url }}"
+        alt="Product Image"
+        class="product-image img-fluid"
+      />
+    </div>
+
+    <!-- right side -->
+    <div class="col-md-6 column-container bg-white">
+      <div class="p-5 m-0 m-md-5">
+        <h3>{{ product.name }}</h3>
+        <p>{{product.description}}</p>
+        <p>{{product.price}} VND</p>
+        {% if product.colors %}
+        <p>Colors:</p>
+        <ul class="color-list">
+          {% for color in product.colors %}
+          <li
+            style="
+              display: inline-block;
+              width: 30px;
+              height: 30px;
+              margin: 5px;
+            "
+          >
+            <button
+              style="background-color: {{ color }}; width: 100%; height: 100%;"
+            ></button>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %} {% if product.sizes %}
+        <p>Sizes:</p>
+        <ul class="size-list">
+          {% for size in product.sizes %}
+          <li
+            style="
+              display: inline-block;
+              width: 30px;
+              height: 30px;
+              border: 1px solid #ccc;
+              margin: 5px;
+            "
+          >
+            <button class="btn btn-primary">{{ size }}</button>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <div class="col-md-2">Quantity:</div>
+        <div class="col-md-4">
+          <!-- <select class="form-select form-select-sm" id="qty-cart">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select> -->
+          <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+            <input type="number" id="qty-cart" class="form-control text-center" value="1" min="1" readonly>
+            <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+          </div>
+        </div>
+        <br />
+        <div class="wishlist">
+         
+          {% if in_wishlist %}
+          <a href="{% url 'remove_from_wishlist' product.id %}"><i class="fa fa-heart" aria-hidden="true" style="color: red;"></i></a>
+          <span>Remove from Wishlist</span>
+          {% else %}
+          <a href="{% url 'add_to_wishlist' product.id %}"> <i class="fa fa-heart-o" aria-hidden="true"></i></a>
+          <span>Add to Wishlist</span>
+          {% endif %}
+
+            
+        </div>
+
+        <div class="d-flex gap-3">
+          <button class="btn btn-lg btn-primary">Buy now</button>
+          <button
+            class="btn btn-lg btn-outline-secondary"
+            type="button"
+            value="{{product.id}}"
+            id="add-cart"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    //Increase and decrease quantity
+    function increaseQuantity() {
+    const quantityInput = document.getElementById("qty-cart");
+    let quantity = parseInt(quantityInput.value);
+    quantityInput.value = quantity + 1;
+  }
+
+  function decreaseQuantity() {
+    const quantityInput = document.getElementById("qty-cart");
+    let quantity = parseInt(quantityInput.value);
+    if (quantity > 1) {
+      quantityInput.value = quantity - 1;
+    }
+  }
+  //check if the button is clicked
+  $(document).on("click", "#add-cart", function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart_add' %}", // Ensure this URL matches your Django URL configuration
+      data: {
+        product_id: $("#add-cart").val(),
+        product_qty: $("#qty-cart").val(),
+        csrfmiddlewaretoken: "{{ csrf_token }}", // Use Django's CSRF token
+        action: "post",
+      },
+      success: function (json) {
+        console.log("Server response:", json);
+        // Update the cart quantity displayed on the page
+        document.getElementById("cart_quantity").textContent = json.qty;
+
+        // Optionally update the cart total if returned
+        if (json.total) {
+          document.getElementById("cart_total").textContent =
+            json.total.toFixed(2); // Assuming total is sent back
+        }
+        location.reload();
+      },
+      error: function (xhr, errmsg, err) {
+        // Handle error
+        console.error("Error: " + xhr.status + ": " + xhr.responseText);
+        alert("An error occurred while adding the item to the cart.");
+      },
+    });
+  });
+</script>
+{% endif %} {% endblock %}

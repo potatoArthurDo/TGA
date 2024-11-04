@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .wishlist-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .wishlist-items {
+        list-style-type: none;
+        padding: 0;
+    }
+    .wishlist-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+    .wishlist-item h2 {
+        margin: 0;
+    }
+    .wishlist-actions {
+        display: flex;
+        gap: 10px;
+    }
+    .remove-btn {
+        background-color: #e74c3c;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+    .remove-btn:hover {
+        background-color: #c0392b;
+    }
+</style>
+<div class="container mt-4">
+    <h1 class="mb-4">Your Wishlist</h1>
+    {% if wishlist_items %}
+    {% for item in wishlist_items %}
+<div
+  class="row align-items-center"
+  style="
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  "
+>
+  <div class="col-md-2">
+    <a href="{% url 'product' item.id %}">
+    <img
+      src="{{item.image.url}}"
+      alt="Product 1"
+      style="max-width: 100px; /* Limit image size */ height: auto"
+    /></a>
+  </div>
+  <div class="col-md-8">
+    <a href="{% url 'product' item.id %}"><h5>{{item.name}}</h5></a>
+    <p>{{item.price}} VND</p>
+  </div>
+
+  <div class="col-md-2 text-end ms-auto">
+    <a href="{% url 'remove_from_wishlist' item.id %}"><i class="fa-solid fa-x"></i></a>
+  </div>
+  
+
+ 
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+{% endblock %}

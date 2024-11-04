@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* Custom styles */
+    .profile-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .order-item, .wishlist-item {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+    }
+    .review-card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+<div class="container my-5">
+    <div class="row">
+      <!-- Profile Card -->
+      <div class="col-md-4 mb-4">
+        <div class="profile-card p-4 text-center">
+          <img src="#" alt="User Avatar" class="profile-avatar mb-3">
+          <h3>John Doe</h3>
+          <p>Fashion enthusiast</p>
+          <button class="btn btn-primary btn-sm mt-3">Edit Profile</button>
+        </div>
+      </div>
+  
+      <!-- Profile Details -->
+      <div class="col-md-8">
+        <!-- Order History -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4>Order History</h4>
+                <a href="#" class="btn btn-link btn-sm p-0">See More</a>
+              </div>
+          <div class="order-item d-flex justify-content-between align-items-center">
+            <span>Order #12345 - $49.99</span>
+            <button class="btn btn-outline-secondary btn-sm">View Details</button>
+          </div>
+          <div class="order-item d-flex justify-content-between align-items-center">
+            <span>Order #12346 - $29.99</span>
+            <button class="btn btn-outline-secondary btn-sm">View Details</button>
+          </div>
+        </div>
+  
+        <!-- Wishlist -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+          <h4>Wishlist</h4>
+          <a href="{% url 'wishlist' %}" class="btn btn-link btn-sm p-0">See More</a>
+        </div>
+          <div class="wishlist-item d-flex justify-content-between align-items-center">
+            <span>Blue Denim Jacket</span>
+            <button class="btn btn-outline-secondary btn-sm">Remove</button>
+          </div>
+          <div class="wishlist-item d-flex justify-content-between align-items-center">
+            <span>Red Striped T-Shirt</span>
+            <button class="btn btn-outline-secondary btn-sm">Remove</button>
+          </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="mb-4">
+            <h4>Reviews</h4>
+        <div class="review-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5>Blue Denim Jacket</h5>
+              <small>Reviewed on: October 15, 2024</small>
+            </div>
+            <div class="review-rating mb-2">
+              <span>⭐⭐⭐⭐⭐</span> <!-- 5 Stars -->
+            </div>
+            <p>
+              Love this jacket! The quality is amazing, and it fits perfectly. It's a great addition to my wardrobe and keeps me warm without being too bulky.
+            </p>
+          </div>
+        
+          <!-- Another Review Card -->
+          <div class="review-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5>Red Striped T-Shirt</h5>
+              <small>Reviewed on: October 5, 2024</small>
+            </div>
+            <div class="review-rating mb-2">
+              <span>⭐⭐⭐⭐</span> <!-- 4 Stars -->
+            </div>
+            <p>
+              Nice T-shirt, the material is soft and breathable. The color is vibrant, but it runs a little small. I would recommend sizing up if you want a looser fit.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}

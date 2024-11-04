@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<br><br>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+            <h5>User Information</h5>
+  <form method="POST" action="{% url 'update_info' %}">
+    {% csrf_token %}
+    {{ update_form.as_p }}
+    
+  </form>
+  <a href="{% url 'change_password' %}"><button type="submit" class="btn btn-outline-secondary">Change Password</button></a>
+  <br><br>
+  <h5>Shipping Information</h5>
+
+  {{ shipping_form.as_p }}
+  <button type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+
+        
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if categories %}
+<br>
+<div class="container">
+    {% for category in categories %}
+    <div class="card mb-3" style="border: none; box-shadow: none;">
+        <div class="card-body">
+            <a href="{% url 'category' category.name %}" style="  transition: transform 0.2s; display: inline-block;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';"><h3 class="card-title">{{ category.name }}</h3></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
