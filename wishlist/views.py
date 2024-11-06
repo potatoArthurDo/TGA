@@ -42,7 +42,7 @@ def add_to_wishlist(request, pk):
             messages.success(request, 'Product added to wishlist')
         return redirect(reverse('product', args=[pk]))
     else:
-        messages.error(request, 'You must be logged in to view this page')
+        messages.error(request, 'You must be logged to do this action')
         return redirect('home')
     
 def wishlist(request):

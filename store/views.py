@@ -54,6 +54,8 @@ def product(request, pk):
     if request.user.is_authenticated:
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         in_wishlist = wishlist.products.filter(id=product.id).exists()
+    else:
+        in_wishlist = False
     return render(request, 'product.html', {'product': product, 'in_wishlist': in_wishlist})
 
 def change_password(request):

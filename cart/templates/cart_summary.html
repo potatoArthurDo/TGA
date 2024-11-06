@@ -4,8 +4,8 @@
 
 <div class="container mt-4">
     <h1 class="mb-4">Your Shopping Cart</h1>
-    {% if cart_products %}
-    {% for product in cart_products %}
+    {% if cart_items %}
+    {% for product in cart_items %}
 <div
   class="row align-items-center"
   style="
@@ -16,32 +16,38 @@
   "
 >
   <div class="col-md-2">
-    <a href="{% url 'product' product.id %}">
+    <a href="{% url 'product' product.product.id %}">
     <img
-      src="{{product.image.url}}"
+      src="{{product.product.image.url}}"
       alt="Product 1"
       style="max-width: 100px; /* Limit image size */ height: auto"
     /></a>
   </div>
   <div class="col-md-6">
-    <a href="{% url 'product' product.id %}"><h5>{{product.name}}</h5></a>
-    <p>{{product.price}} VND</p>
+    <a href="{% url 'product' product.product.id %}"><h5>{{product.product.name}}</h5></a>
+    <p>{{product.product.price}} VND</p>
+
+    <!-- Display selected color and size -->
+     {% if product.color or product.size %}
+    <p  ><strong >Color:</strong> {{ product.color }}</p>
+    <p ><strong>Size:</strong> {{ product.size }}</p>
+    {% else %}
+    <p></p>
+    {% endif %}
   </div>
   <div class="col-md-2">
 
     <div class="input-group">
-      {% for key, value in quantities.items %}
-    {% if key == product.id|slugify %}
+      
       <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
-      <input type="number" id="qty-cart" class="form-control text-center" value="{{value}}" min="1" readonly>
+      <input type="number" id="qty-cart" class="form-control text-center" value="{{product.quantity}}" min="1" readonly>
       <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
-      {% endif %}
-{% endfor %}
+
     </div>
     </div>
   
   <div class="col-md-2 text-end">
-    <button type="button" class="btn btn-sm delete-product" data-index ="{{product.id}}"><i class="fa-solid fa-x"></i></button>
+    <button type="button" class="btn btn-sm delete-product" data-index ="{{product.product.id}}" data-color="{{ product.color }}" data-size="{{ product.size }}"><i class="fa-solid fa-x"></i></button>
   </div>
   
 
@@ -81,13 +87,15 @@
             url: "{% url 'cart_delete' %}",  // Ensure this URL matches your Django URL configuration
             data: {
                 product_id: $(this).data('index'),
+                color: $(this).data('color'),
+                size: $(this).data('size'),
                 csrfmiddlewaretoken: '{{ csrf_token }}',  // Use Django's CSRF token
                 action: 'post'
             },
             success: function(json) {
-                console.log(json)
                 // Handle the response from the server (e.g., show a success message)
                 location.reload();
+
             },
             error: function(xhr, errmsg, err) {
             }

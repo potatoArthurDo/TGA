@@ -57,6 +57,10 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)  # Update timestamp
     is_active = models.BooleanField(default=True)  # Active status
 
+    #product colors and sizes
+    colors = models.JSONField(default=list, blank=True)
+    sizes = models.JSONField(default=list, blank=True)
+
     is_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(max_digits=15, decimal_places=0, null=True, blank=True)
     is_new_arrival = models.BooleanField(default=False)
@@ -64,6 +68,17 @@ class Product(models.Model):
     collection = models.ForeignKey('Collection', on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return self.name
+
+#a Model to store stock of each product
+class ProductInventory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventory')
+    stock_quantity = models.PositiveIntegerField()
+    color = models.CharField(max_length=50, null=True, blank=True)
+    size = models.CharField(max_length=50, null=True, blank=True)
+
+    class Meta:
+        #Ensure unique color-size combination per product
+        unique_together = ('product', 'color', 'size')
 
 # Create a collection model
 class Collection(models.Model):

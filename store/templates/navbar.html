@@ -135,7 +135,7 @@
             </a>
           </li>
           <li class="d-lg-none">
-            <a href="#" class="mx-2">
+            <a href="{% url 'wishlist' %}" class="mx-2">
               <svg width="24" height="24" viewBox="0 0 24 24">
                 <use xlink:href="#heart"></use>
               </svg>
@@ -230,7 +230,7 @@
     <ul class="cat-list">
       {% for category in categories %}
       <li class="cat-list-item">
-        <a href="{% url 'category' category.name %}" title="category">{{category}}</a>
+        <a href="{% url 'category' category.name %}" title="category">{{category.name}}</a>
         {% endfor %}
       </li>
     </ul>
