@@ -70,6 +70,7 @@ TEMPLATES = [
                 #add categories processor
                 'store.context_processors.categories_processcor',
                 'cart.context_processors.cart',
+                'wishlist.context_processors.wishlist',
             ],
         },
     },

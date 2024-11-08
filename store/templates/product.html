@@ -10,25 +10,25 @@
 <br />
 {% if product %}
 <div class="container-fluid">
-  <div class="row w-75">
+  <div class="row w-100 ư-md-75">
     <!-- product image -->
-    <div class="col-md-6 p-0">
+    <div class="col-12 col-md-6 p-0">
       <img
         src="{{ product.image.url }}"
         alt="Product Image"
-        class="product-image img-fluid"
+        class="product-image img-fluid w-100"
       />
     </div>
 
     <!-- right side -->
-    <div class="col-md-6 column-container bg-white">
-      <div class="p-5 m-0 m-md-5">
+    <div class="col-12 col-md-6 column-container bg-white">
+      <div class="p-3 m-md-5">
         <h3>{{ product.name }}</h3>
         <p>{{product.description}}</p>
         <p>{{product.price}} VND</p>
         {% if product.colors %}
         <p>Colors:</p>
-        <ul class="color-list">
+        <ul class="color-list d-flex flex-wrap">
           {% for color in product.colors %}
           <li
             style="
@@ -84,7 +84,7 @@
           </div>
         </div>
         <br />
-        <div class="wishlist">
+        <div class="wishlist my-3">
          
           {% if in_wishlist %}
           <a href="{% url 'remove_from_wishlist' product.id %}"><i class="fa fa-heart" aria-hidden="true" style="color: red;"></i></a>
@@ -97,10 +97,10 @@
             
         </div>
 
-        <div class="d-flex gap-3">
-          <button class="btn btn-lg btn-primary">Buy now</button>
+        <div class="d-flex flex-column flex-md-row gap-3">
+          <button class="btn btn-lg btn-primary w-100">Buy now</button>
           <button
-            class="btn btn-lg btn-outline-secondary"
+            class="btn btn-lg btn-outline-secondary w-100"
             type="button"
             value="{{product.id}}"
             id="add-cart"

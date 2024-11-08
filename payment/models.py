@@ -46,7 +46,7 @@ class Order(models.Model):
     shipped = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Order - {str(self.id)}'
+        return f'Order #{str(self.id)}'
     
 #Auto add shipping date
 @receiver(post_save, sender=Order)
@@ -59,7 +59,7 @@ def set_shipping_date(sender, instance, created, **kwargs):
 
 class OrderItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, related_name='orderitem')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
     quantity = models.PositiveIntegerField(default=1)

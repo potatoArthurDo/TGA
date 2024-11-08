@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  /* Thumbnail image styling */
+  .item-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+
+  /* Card styling for orders on smaller screens */
+  .order-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .order-card h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .order-card small {
+    color: #888;
+  }
+
+  /* Hide table on smaller screens */
+  @media (max-width: 768px) {
+    .desktop-table {
+      display: none;
+    }
+  }
+
+  /* Hide cards on larger screens */
+  @media (min-width: 769px) {
+    .mobile-order-cards {
+      display: none;
+    }
+  }
+</style>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">Your Orders</h2>
+
+  {% if orders %}
+  
+  <!-- Desktop Table View -->
+  <div class="desktop-table">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Items</th>
+            <th scope="col">Total Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.date_ordered|date:"d-m-Y" }}</td>
+            <td>
+              <ul class="list-unstyled mb-0">
+                {% for item in order.orderitem.all %}
+                <li class="d-flex align-items-center">
+                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-thumbnail">
+                  <span>{{ item.product.name }} - Qty: {{ item.quantity }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>{{ order.amount_paid }} VND</td>
+            <td>
+              <span
+                class="badge {% if order.status == 'Delivered' %}badge-success{% elif order.status == 'Pending' %}badge-warning{% else %}badge-secondary{% endif %}"
+              >
+                {{ order.status }}
+              </span>
+            </td>
+            <td>
+              <a href="{% url 'order_details' order.id %}" class="btn btn-primary btn-sm">View</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-order-cards">
+    {% for order in orders %}
+    <div class="order-card">
+      <h5>Order ID: {{ order.id }}</h5>
+      <p class="mb-1"><small>Date: {{ order.date_ordered|date:"d-m-Y" }}</small></p>
+      <p><strong>Items:</strong></p>
+      <ul class="list-unstyled">
+        {% for item in order.orderitem.all %}
+        <li class="d-flex align-items-center">
+          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-thumbnail">
+          <span>{{ item.product.name }} - Qty: {{ item.quantity }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mb-1"><strong>Total Price:</strong> {{ order.amount_paid }} VND</p>
+      <p class="mb-1"><strong>Status:</strong> 
+        <span
+          class="badge {% if order.status == 'Delivered' %}badge-success{% elif order.status == 'Pending' %}badge-warning{% else %}badge-secondary{% endif %}"
+        >
+          {{ order.status }}
+        </span>
+      </p>
+      <a href="{% url 'order_details' order.id %}" class="btn btn-primary btn-sm mt-2">View Details</a>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <p class="text-center">You have not placed any orders yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

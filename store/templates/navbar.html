@@ -45,7 +45,7 @@
                 </ul>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="#">Blog</a>
+                  <a class="nav-link" href="{% url 'blog' %}">Blog</a>
                 </li>
               <!-- {% if user.is_authenticated %}
               <li class="nav-item">
@@ -98,10 +98,10 @@
                   </ul>
                 </li> -->
                 <li class="nav-item">
-                  <a href="{% url 'login_user' %}" >Log In</a>
+                  <a href="{% url 'login_user' %}" class="nav-link" >Log In</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'register_user' %}" >Sign Up</a>
+                  <a href="{% url 'register_user' %}" class="nav-link">Sign Up</a>
                 </li>
                 {% endif %}
 

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm
 from django.db.models import Q
-from payment.models import ShippingAdress
+from payment.models import ShippingAdress,Order
 from payment.forms import ShippingAdressForm
 from cart.cart import Cart
 from wishlist.models import Wishlist
@@ -15,7 +15,8 @@ def user_profile(request,pk):
     
     if request.user.is_authenticated:
         user = User.objects.get(id = pk)
-        return render(request, 'user_profile.html', {'user': user})
+        orders = Order.objects.filter(user = user).order_by('-date_ordered')
+        return render(request, 'user_profile.html', {'user': user, 'orders': orders})
     else:
         messages.error(request, 'You must be logged in to view this page')
         return redirect('home')
@@ -153,5 +154,8 @@ def home(request):
     categories = Category.objects.all()
     return render(request, 'home.html', {"products": products, 'categories': categories})
 
-def about(reuqest):
-    return render(reuqest, 'about.html', {})
+def about(request):
+    return render(request, 'about.html', {})
+
+def blog(request):
+    return render(request, 'blog.html', {})

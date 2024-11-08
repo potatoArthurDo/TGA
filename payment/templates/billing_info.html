@@ -9,48 +9,49 @@
             </div>
   
             <div class="card-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th class="text-center">Qty</th>
-                    <th class="text-end">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for product in products %}
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-center">Color</th>
+                        <th class="text-center">Size</th>
+                        <th class="text-end">Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for product in cart_items %}
+                      
+                      <tr>
+                        <td>{{product.product.name}}</td>
+                        
+                        <td class="text-center">{{product.quantity}}</td>
+                        <td class="text-center">{{product.color}}</td>
+                        <td class="text-center">{{product.size}}</td>
+                        <td class="text-end">{{product.product.price}} VND</td>
+                      </tr>
+                      
+                      {% endfor %}
+                    </tbody>
+      
+                    <tfoot>
+                      <tr>
+                        <td><strong>Subtotal</strong></td>
+                        
+                        <td class="text-end" colspan="4">{{totals}} VND</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Shipping</strong></td>
                   
-                  <tr>
-                    <td>{{product.name}}</td>
-                    {% for key,value in quantities.items %}
-                    {% if key == product.id|slugify %}
-                    <td class="text-center">{{value}}</td>
-                    {% endif %}
-                    {% endfor %}
-                    <td class="text-end">{{product.price}} VND</td>
-                  </tr>
-                  
-                  {% endfor %}
-                </tbody>
-  
-                <tfoot>
-                  <tr>
-                    <td><strong>Subtotal</strong></td>
-                    <td></td>
-                    <td class="text-end">{{totals}} VND</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Shipping</strong></td>
-                    <td></td>
-                    <td class="text-end">0 VND</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Total</strong></td>
-                    <td></td>
-                    <td class="text-end"><strong> {{totals}} VND</strong></td>
-                  </tr>
-                </tfoot>
-              </table>
+                        <td class="text-end" colspan="4">0 VND</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Total</strong></td>
+                        
+                        <td class="text-end" colspan="4"><strong> {{totals}} VND</strong></td>
+                      </tr>
+                    </tfoot>
+                  </table>
   
               <div class="d-grid gap-2">
   

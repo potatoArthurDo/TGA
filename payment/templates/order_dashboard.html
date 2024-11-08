@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container py-5">
+<div class="container py-3">
     <h3>Order Dashboard</h3>
     <div class="row ">
 <table class="table  table-hover table-responsive">
@@ -49,7 +49,7 @@
             {% endif %}
         </td>
         <td>
-            <a href="{% url 'order_details' order.id %}">More Info</a>
+            <a href="{% url 'order_details' order.id %}" target="_blank">More Info</a>
         </td>
       </tr>
       {% endfor %}

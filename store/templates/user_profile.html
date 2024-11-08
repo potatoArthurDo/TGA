@@ -43,16 +43,20 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h4>Order History</h4>
-                <a href="#" class="btn btn-link btn-sm p-0">See More</a>
+                <a href="{% url 'all_placed_orders' %}" class="btn btn-link btn-sm p-0">See More</a>
               </div>
+              {% if orders %}
+              {% for order in orders|slice:":3" %}
           <div class="order-item d-flex justify-content-between align-items-center">
-            <span>Order #12345 - $49.99</span>
-            <button class="btn btn-outline-secondary btn-sm">View Details</button>
+            <span>{{order}} - {{order.amount_paid}} VND</span>
+            <a href="{% url 'order_details' order.id %}" class="btn btn-outline-secondary btn-sm">View Details</a>
           </div>
+          {% endfor %}
+          {% else %}
           <div class="order-item d-flex justify-content-between align-items-center">
-            <span>Order #12346 - $29.99</span>
-            <button class="btn btn-outline-secondary btn-sm">View Details</button>
+            <h5>Your order history is empty</h5>
           </div>
+          {% endif %}
         </div>
   
         <!-- Wishlist -->
@@ -61,14 +65,19 @@
           <h4>Wishlist</h4>
           <a href="{% url 'wishlist' %}" class="btn btn-link btn-sm p-0">See More</a>
         </div>
+        {% if wishlist %}
+        {% for product in wishlist|slice:":3" %}
           <div class="wishlist-item d-flex justify-content-between align-items-center">
-            <span>Blue Denim Jacket</span>
-            <button class="btn btn-outline-secondary btn-sm">Remove</button>
+            <a href="{% url 'product' product.id %}">{{product}}</a>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'remove_from_wishlist' product.id %}">Remove</a>
+            <!-- <button class="btn btn-outline-secondary btn-sm">Remove</button> -->
           </div>
-          <div class="wishlist-item d-flex justify-content-between align-items-center">
-            <span>Red Striped T-Shirt</span>
-            <button class="btn btn-outline-secondary btn-sm">Remove</button>
-          </div>
+        {% endfor %}
+        {% else %}
+        <div class="wishlist-item d-flex justify-content-between align-items-center">
+          <h5>Your wishlist is empty</h5>
+        </div>
+        {% endif %}
         </div>
 
         <!-- Reviews -->

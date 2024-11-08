@@ -6,27 +6,36 @@ from django.contrib import messages
 from store.models import Profile
 import datetime
 
-# Create your views here.
+# Get all user placed orders
+def all_placed_orders(request):
+    if request.user.is_authenticated:
+        orders = Order.objects.filter(user__id = request.user.id).order_by('-date_ordered')
+        return render(request, 'all_placed_orders.html', {'orders':orders})
+    else:
+        messages.error(request, 'You must be logged in to view this page')
+        return redirect('home')
 def checkout(request):
     cart = Cart(request)
-    products = cart.get_prods
-    quantities = cart.get_quants
+    # products = cart.get_prods
+    # quantities = cart.get_quants
+    cart_items = cart.get_cart_items()
     totals = cart.cart_total()
 
     if request.user.is_authenticated:
         shipping_user =  ShippingAdress.objects.get(user__id = request.user.id)
         shipping_form = ShippingAdressForm(request.POST or None, instance=shipping_user)
-        return render(request, 'checkout.html', {'products':products, 'quantities':quantities, 'totals':totals, 'shipping_form':shipping_form})
+        return render(request, 'checkout.html', { 'cart_items':cart_items, 'totals':totals, 'shipping_form':shipping_form})
     else:
         #Not a logged in user
         shipping_form = ShippingAdressForm(request.POST or None)
-        return render(request, 'checkout.html', {'products':products, 'quantities':quantities, 'totals':totals, 'shipping_form':shipping_form})
+        return render(request, 'checkout.html', { 'cart_items':cart_items, 'totals':totals, 'shipping_form':shipping_form})
 
 def billing_info(request):
     if request.POST:
         cart = Cart(request)
-        products = cart.get_prods
-        quantities = cart.get_quants
+        # products = cart.get_prods
+        # quantities = cart.get_quants
+        cart_items = cart.get_cart_items()
         totals = cart.cart_total()
 
         #Create a session with Shipping info
@@ -36,11 +45,11 @@ def billing_info(request):
 
         if request.user.is_authenticated:
             billing_form = PaymentForm()
-            return render(request, 'billing_info.html', {'products':products, 'quantities':quantities, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
+            return render(request, 'billing_info.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
         else:
             #not logged in
             billing_form = PaymentForm()
-            return render(request, 'billing_info.html', {'products':products, 'quantities':quantities, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
+            return render(request, 'billing_info.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
     
     else:
         messages.error(request, 'Acess Denined')
