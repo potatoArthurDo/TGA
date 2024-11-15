@@ -17,6 +17,8 @@ urlpatterns = [
     path('user_profile/<int:pk>', views.user_profile, name = 'user_profile'),
     path('blog/', views.blog, name = 'blog'),
 
+    path('product/<int:pk>/rating', views.rating_product, name = 'rating_product'),
+
 
 
    

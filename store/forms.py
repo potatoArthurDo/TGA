@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, SetPasswordForm
-from .models import Product, Profile, Category
+from .models import Product, Profile, Category, Rating
 
 
 class ChangePasswordForm(SetPasswordForm):
@@ -117,4 +117,13 @@ class SignUpForm(forms.ModelForm):
         self.fields['password'].label = ''
         self.fields['password'].help_text = '<ul class="form-text text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
 
+#add a form for rating a product
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ('score', 'review')
+        widgets = {
+            'score': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'review': forms.Textarea(attrs={'rows': 3}),
+        }
         

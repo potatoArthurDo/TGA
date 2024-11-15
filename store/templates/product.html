@@ -6,11 +6,65 @@
       border: 2px solid #C8BBa3; /* Bootstrap primary color */
       box-shadow: 0 0 5px #C8BBa3;
     }
+    .rating-stars {
+  display: flex;
+  flex-direction: row-reverse; /* Reverse the stars' visual alignment */
+  justify-content: flex-end; /* Align them to the right */
+  gap: 5px; /* Optional spacing between stars */
+}
+
+.rating-stars input[type="radio"] {
+  display: none; /* Hide the radio buttons */
+}
+
+.rating-stars label {
+  font-size: 2rem; /* Adjust the size of the stars */
+  color: #ccc; /* Default color for unselected stars */
+  cursor: pointer;
+}
+
+.rating-stars input[type="radio"]:checked ~ label {
+  color: gold; /* Highlight selected stars */
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  color: gold; /* Highlight stars on hover */
+}
+
+.rated-stars {
+  display: inline-block;
+
+}
+
+.star {
+  font-size: 1.5rem; /* Adjust the size of the stars */
+  color: #ccc;
+}
+.star.filled {
+  color: gold; /* Gold color for filled stars */
+}
+
+.star.empty {
+  color: #ccc; /* Default color for unfilled stars */
+}
+/* Ratings Header */
+.ratings-header {
+  font-size: 2rem; /* Increase the size */
+  font-weight: bold; /* Make it bold */
+  text-align: center; /* Center align */
+  color: #333; /* Darker color for better visibility */
+  border-bottom: 2px solid #ccc; /* Add a subtle underline */
+  padding-bottom: 10px; /* Space below the text */
+  margin-bottom: 20px; /* Space around the header */
+}
+
+
   </style>
 <br />
 {% if product %}
 <div class="container-fluid">
-  <div class="row w-100 ư-md-75">
+  <div class="row w-100 w-md-75">
     <!-- product image -->
     <div class="col-12 col-md-6 p-0">
       <img
@@ -112,8 +166,79 @@
     </div>
   </div>
 </div>
+<h3 class="ratings-header">Customer Ratings</h3>
+<div class="ratings-section">
+  {% if product.ratings.count %}
+    {% for rating in product.ratings.all %}
+      <div class="rating-review p-3 mb-3 border rounded">
+        <div class="d-flex align-items-center">
+          <div class="user-avatar me-3">
+            <a href="{% url 'user_profile' rating.user.id %}">
+              <img src="{{ rating.user.profile.avatar_image.url }}" 
+                   alt="User Avatar" 
+                   class="avatar-img rounded-circle" 
+                   width="40" height="40">
+            </a>
+          </div>
+          <div>
+            <strong>{{ rating.user.first_name }} {{ rating.user.last_name }}</strong>
+            <div class="rated-stars">
+              {% for i in "12345" %}
+                <span class="star {% if forloop.counter <= rating.score %}filled{% else %}empty{% endif %}">★</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <p class="review-text mt-2">{{ rating.review }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No ratings yet.</p>
+  {% endif %}
+</div>
+
+<!-- <h3>Submit or Update Your Rating</h3>
+{% if user_rating %}
+  <div class="current-rating p-3 mb-3 border rounded">
+    <p><strong>Your Current Rating:</strong></p>
+    <div class="d-flex align-items-center">
+      <div class="rating-stars">
+        {% for i in "12345" %}
+          <span class="star {% if forloop.counter <= user_rating.score %}filled{% else %}empty{% endif %}">★</span>
+        {% endfor %}
+      </div>
+    </div>
+    <p>{{ user_rating.review }}</p>
+  </div>
+{% endif %}
+
+<form method="POST" action="{% url 'rating_product' product.id %}" class="rating-form">
+  {% csrf_token %}
+  <div class="rating-stars mb-3">
+    <input type="radio" id="star5" name="rating" value="5">
+    <label for="star5">★</label>
+  
+    <input type="radio" id="star4" name="rating" value="4">
+    <label for="star4">★</label>
+  
+    <input type="radio" id="star3" name="rating" value="3">
+    <label for="star3">★</label>
+  
+    <input type="radio" id="star2" name="rating" value="2">
+    <label for="star2">★</label>
+  
+    <input type="radio" id="star1" name="rating" value="1">
+    <label for="star1">★</label>
+  </div>
+  
+  <textarea name="review" class="form-control my-3" placeholder="Write your review here..." rows="4"></textarea>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form> -->
+
 <script>
+
     //Increase and decrease quantity
+    
     function increaseQuantity() {
     const quantityInput = document.getElementById("qty-cart");
     let quantity = parseInt(quantityInput.value);
@@ -130,7 +255,12 @@
   
   // Assuming selectedColor and selectedSize are globally available
     let selectedColor = null;
-    let selectedSize = null;
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Decrease the quantity of the product in the cart by 1,
+   * but only if the current quantity is greater than 1.
+   */
+/******  87de6f59-526f-434b-b26e-6983a8785b59  *******/    let selectedSize = null;
 
   function highlightSelection(selectedButton, type) {
     // Remove 'selected' class from any previously selected button in the same group

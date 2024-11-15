@@ -94,3 +94,18 @@ class Collection(models.Model):
     is_active = models.BooleanField(default=False)
     def __str__(self):
         return self.name
+
+#Create a rating model
+class Rating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,  related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    score = models.PositiveSmallIntegerField()
+    review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user')
+
+    def __str__(self):
+        return f"Rating for {self.product.name} by {self.user.username}"
+  

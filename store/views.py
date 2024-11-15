@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
-from .models import Product, Profile, Category
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product, Profile, Category, Rating
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm
+from .forms import SignUpForm, LoginForm, UpdateUserInfoForm, ChangePasswordForm, RatingForm
 from django.db.models import Q
 from payment.models import ShippingAdress,Order
 from payment.forms import ShippingAdressForm
@@ -11,13 +11,39 @@ from cart.cart import Cart
 from wishlist.models import Wishlist
 # Create your views here.
 
+#Rating view
+def rating_product(request, pk):
+    if request.user.is_authenticated:
+        product = get_object_or_404(Product, id = pk)
+        if request.method == 'POST':
+            score = int(request.POST['rating'])
+            review = request.POST.get('review', '')
+            #Check if the user has already rated the product
+            rating, created = Rating.objects.get_or_create(product = product, user = request.user)
+            if not created:
+                rating.score = score
+                rating.review = review
+                rating.save()
+                messages.success(request, 'Rating updated')
+            else:
+                rating.score = score
+                rating.review = review
+                rating.save()
+                messages.success(request, 'Rating added')
+
+            return redirect('product', pk = pk)
+    else:
+        messages.error(request, 'You must be logged in to view this page')
+        return redirect('login')
+    
 def user_profile(request,pk):
     
     if request.user.is_authenticated:
         user = User.objects.get(id = pk)
         orders = Order.objects.filter(user = user).order_by('-date_ordered')
         profile = Profile.objects.get(user = user)
-        return render(request, 'user_profile.html', {'user': user, 'orders': orders, 'profile': profile})
+        ratings = Rating.objects.filter(user = user)
+        return render(request, 'user_profile.html', {'user': user, 'orders': orders, 'profile': profile, 'ratings': ratings})
     else:
         messages.error(request, 'You must be logged in to view this page')
         return redirect('home')
@@ -52,13 +78,16 @@ def all_categories(request):
 def product(request, pk):
     product = Product.objects.get(id = pk)
 
+    user_rating = None
     #Check if the product is in the wishlist
     if request.user.is_authenticated:
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         in_wishlist = wishlist.products.filter(id=product.id).exists()
+
+        user_rating = product.ratings.filter(user=request.user).first()
     else:
         in_wishlist = False
-    return render(request, 'product.html', {'product': product, 'in_wishlist': in_wishlist})
+    return render(request, 'product.html', {'product': product, 'in_wishlist': in_wishlist, 'user_rating': user_rating})
 
 def change_password(request):
     if request.user.is_authenticated:
