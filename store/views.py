@@ -16,7 +16,8 @@ def user_profile(request,pk):
     if request.user.is_authenticated:
         user = User.objects.get(id = pk)
         orders = Order.objects.filter(user = user).order_by('-date_ordered')
-        return render(request, 'user_profile.html', {'user': user, 'orders': orders})
+        profile = Profile.objects.get(user = user)
+        return render(request, 'user_profile.html', {'user': user, 'orders': orders, 'profile': profile})
     else:
         messages.error(request, 'You must be logged in to view this page')
         return redirect('home')

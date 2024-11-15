@@ -23,6 +23,11 @@ class Profile(models.Model):
     type_of_address = models.CharField(max_length=200, choices=ADDRESS_CHOICES, default='home')
     items_in_cart = models.CharField(max_length=200, null=True, blank=True)
 
+    #avatar
+    avatar_image = models.ImageField(upload_to='uploads/avatars/', null=True, blank=True)
+    #bio
+    bio = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return self.user.email
     
