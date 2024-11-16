@@ -39,9 +39,9 @@
 
     <div class="input-group">
       
-      <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
-      <input type="number" id="qty-cart" class="form-control text-center" value="{{product.quantity}}" min="1" readonly>
-      <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(-1, '{{product.product.id}}')">-</button>
+      <input type="number" id="qty-cart-{{ product.product.id }}" class="form-control text-center" value="{{product.quantity}}" min="1" readonly>
+      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(1, '{{product.product.id}}')">+</button>
 
     </div>
     </div>
@@ -57,7 +57,7 @@
 {% endif %}
 <div class="d-flex justify-content-between mt-4">
     <h4>Total:</h4>
-    <h4>{{totals}} VND </h4>
+    <h4 ><span id="cart-total">{{totals}}</span> VND </h4>
 </div>
 <!-- Checkout Button -->
 <div class="text-end mt-4">
@@ -78,6 +78,49 @@
       quantityInput.value = quantity - 1;
     }
   }
+
+  function updateCart(change, product_id) {
+    // Correct template literal usage
+    const quantityInput = document.getElementById(`qty-cart-${product_id}`);
+    let newQuantity = parseInt(quantityInput.value) + change;
+
+    if (newQuantity < 1) {
+        alert("Quantity must be at least 1.");
+        return;
+    }
+
+    // Update input field value
+    quantityInput.value = newQuantity;
+
+    // AJAX request to update cart
+    $.ajax({
+        url: "{% url 'cart_update' %}",
+        method: "POST",
+        data: {
+            product_id: product_id,
+            product_qty: newQuantity, // Match backend key
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function (json) {
+            // Update cart totals dynamically
+            if (json.success) {
+                document.getElementById("cart-total").textContent = json.totals;
+
+            } else {
+                alert(json.message || "Failed to update cart.");
+            }
+        },
+        error: function (xhr, errmsg, err) {
+            console.error("Error updating cart:", errmsg);
+            console.log("Updating product:", product_id);
+
+            alert("An error occurred while updating the cart. Please try again.");
+        }
+    });
+}
+
+
     //Delete from cart
     $(document).on('click', '.delete-product', function(e) {
         e.preventDefault();

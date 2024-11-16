@@ -69,9 +69,16 @@ def cart_update(request):
 		color = request.POST.get('color', None)
 		size = request.POST.get('size', None)
 
-		cart.update(product=product_id, quantity=product_qty, color=color, size=size)
+		product = get_object_or_404(Product, id=product_id)
 
-		response = JsonResponse({'qty':product_qty})
+		cart.update(product=product, quantity=product_qty, color=color, size=size)
+
+		#Recalculate total
+		cart_items = cart.get_cart_items()
+		totals = cart.cart_total()
+
+		response = JsonResponse({'qty':product_qty, 'success':True, 'totals':totals})
 		#return redirect('cart_summary')
-		messages.success(request, ("Your Cart Has Been Updated..."))
+		# messages.success(request, ("Your Cart Has Been Updated..."))
 		return response
+	return JsonResponse({'success':False, 'message':'Invalid Request'})
