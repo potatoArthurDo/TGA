@@ -25,7 +25,7 @@
   </div>
   <div class="col-md-6">
     <a href="{% url 'product' product.product.id %}"><h5>{{product.product.name}}</h5></a>
-    <p>{{product.product.price}} VND</p>
+    <p>{{product.product.formatted_price}} VND</p>
 
     <!-- Display selected color and size -->
      {% if product.color or product.size %}
@@ -39,9 +39,9 @@
 
     <div class="input-group">
       
-      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(-1, '{{product.product.id}}')">-</button>
-      <input type="number" id="qty-cart-{{ product.product.id }}" class="form-control text-center" value="{{product.quantity}}" min="1" readonly>
-      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(1, '{{product.product.id}}')">+</button>
+      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(-1, '{{product.product.id}}', '{{product.color}}', '{{product.size}}')">-</button>
+      <input type="number" id="qty-cart-{{ product.product.id }}-{{ product.color }}-{{ product.size }}" class="form-control text-center" value="{{product.quantity}}" min="1" readonly>
+      <button class="btn btn-outline-secondary" type="button" onclick="updateCart(1, '{{product.product.id}}', '{{product.color}}', '{{product.size}}')">+</button>
 
     </div>
     </div>
@@ -79,9 +79,9 @@
     }
   }
 
-  function updateCart(change, product_id) {
+  function updateCart(change, product_id, color, size) {
     // Correct template literal usage
-    const quantityInput = document.getElementById(`qty-cart-${product_id}`);
+    const quantityInput = document.getElementById(`qty-cart-${product_id}-${color}-${size}`);
     let newQuantity = parseInt(quantityInput.value) + change;
 
     if (newQuantity < 1) {
@@ -99,6 +99,8 @@
         data: {
             product_id: product_id,
             product_qty: newQuantity, // Match backend key
+            color: color,
+            size: size,
             csrfmiddlewaretoken: '{{ csrf_token }}',
             action: 'post'
         },

@@ -73,6 +73,9 @@ class Product(models.Model):
     collection = models.ForeignKey('Collection', on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return self.name
+    
+    def formatted_price(self):
+        return f"{self.price:,.0f}".replace(",", ".")
 
 #a Model to store stock of each product
 class ProductInventory(models.Model):
