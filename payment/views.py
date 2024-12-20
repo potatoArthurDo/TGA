@@ -59,8 +59,10 @@ def process_payment(request):
     if request.POST:
         #get the cart
         cart = Cart(request)
-        products = cart.get_prods
+        # products = cart.get_prods
         quantities = cart.get_quants
+        # totals = cart.cart_total()
+        cart_items = cart.get_cart_items()
         totals = cart.cart_total()
 
         #get the shipping info from the last page
@@ -86,13 +88,27 @@ def process_payment(request):
             order_id = create_order.pk
 
             #Add order items
-            for product in products():
-                product_id = product.id
-                price = product.price
-                for key,value in quantities().items():
-                    if int(key) == product_id:
-                        create_order_item = OrderItem.objects.create(order_id = order_id, user = user, product_id = product_id, quantity = value, price =price )
-                        create_order_item.save()
+            for item in cart_items:
+                product = item['product']
+                quantity = item['quantity']
+                color = item['color']
+                size = item['size']
+                price  = product.price
+                # for key,value in quantities().items():
+                #     if int(key) == product_id:
+                #         create_order_item = OrderItem.objects.create(order_id = order_id, user = user, product_id = product_id, quantity = value, price =price )
+                #         create_order_item.save()
+
+                create_order_item = OrderItem.objects.create(
+                    order_id = order_id,
+                    user = user,
+                    product_id = product.id,
+                    quantity = quantity,
+                    color = color,
+                    size = size,
+                    price = price
+                )
+                create_order_item.save()
 
             #Clear the cart
             for key in list(request.session.keys()):
@@ -116,13 +132,26 @@ def process_payment(request):
             order_id = create_order.pk
 
             #Add order items
-            for product in products():
-                product_id = product.id
-                price = product.price
-                for key,value in quantities().items():
-                    if int(key) == product_id:
-                        create_order_item = OrderItem.objects.create(order_id = order_id, product_id = product_id, quantity = value, price =price )
-                        create_order_item.save()
+            for item in cart_items:
+                product = item['product']
+                quantity = item['quantity']
+                color = item['color']
+                size = item['size']
+                price  = product.price
+                # for key,value in quantities().items():
+                #     if int(key) == product_id:
+                #         create_order_item = OrderItem.objects.create(order_id = order_id, user = user, product_id = product_id, quantity = value, price =price )
+                #         create_order_item.save()
+
+                create_order_item = OrderItem.objects.create(
+                    order_id = order_id,
+                    product_id = product.id,
+                    quantity = quantity,
+                    color = color,
+                    size = size,
+                    price = price
+                )
+                create_order_item.save()
 
             #Clear the cart
             for key in list(request.session.keys()):

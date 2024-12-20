@@ -64,6 +64,9 @@ class OrderItem(models.Model):
 
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=15, decimal_places=0)
-
+    
+    #Add color and size attributes
+    color = models.CharField(max_length=15, null=True, blank=True)
+    size = models.CharField(max_length=15, null=True, blank=True)
     def __str__(self):
         return f'Order Item - {str(self.id)}'
