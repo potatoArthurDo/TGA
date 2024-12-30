@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'wishlist',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
                 #add categories processor
                 'store.context_processors.categories_processcor',
                 'cart.context_processors.cart',
@@ -138,3 +140,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in the database
 
+#VNPAY CONFIG
+VNPAY_RETURN_URL = 'http://localhost:8000/payment_return'  # get from config
+VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'  # get from config
+VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+VNPAY_TMN_CODE = ''  # Website ID in VNPAY System, get from config
+VNPAY_HASH_SECRET_KEY = ''  # Secret key for create checksum,get from config
