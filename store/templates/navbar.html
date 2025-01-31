@@ -202,7 +202,9 @@
               
           </ul>
           {% endif %}
+          <a href="{% url 'checkout' %}">
           <button class="w-100 btn btn-primary btn-lg" type="button">Continue to Checkout</button>
+            </a>
           <h6 class="text-center">Or</h6>
           <a href="{% url 'cart_summary' %}">
               <button class="w-100 btn btn-secondary btn-lg" type="button">Open Cart</button>

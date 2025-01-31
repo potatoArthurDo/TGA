@@ -1,0 +1,14 @@
+<!-- payment_page.html -->
+<h2>Order Payment</h2>
+<p>Order ID: {{ order_id }}</p>
+<p>Amount: {{ amount }} VND</p>
+
+<p>Scan the QR code with the VNPay app to pay:</p>
+
+<!-- Display the generated QR code -->
+<p>QR Code Path: {{ qr_code_path }}</p>
+<img src="{{qr_code_path}}" alt="Scan to pay with VNPay" />
+
+<!-- Optionally, provide the payment URL for manual payment -->
+<p>If the QR code doesn't work, click the link below to make payment:</p>
+<a href="{{ payment_url }}" target="_blank">Pay with VNPay</a>

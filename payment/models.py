@@ -35,6 +35,10 @@ def create_shipping_address(sender, instance, created, **kwargs):
 post_save.connect(create_shipping_address, sender=User)
 
 class Order(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ('credit_card', "Credit Card"),
+        ('vnpay', 'VNPay'),
+    ]
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     full_name = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
@@ -44,6 +48,9 @@ class Order(models.Model):
 
     date_delivered = models.DateTimeField(null=True, blank=True)
     shipped = models.BooleanField(default=False)
+
+    #Adding payment method
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='credit_card')
 
     def __str__(self):
         return f'Order #{str(self.id)}'

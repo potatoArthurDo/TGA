@@ -11,13 +11,16 @@ urlpatterns = [
     path('order_details/<int:pk>', views.order_details, name = 'order_details'),
     path('all_placed_orders/', views.all_placed_orders, name = 'all_placed_orders'),
 
+    #credit card option
+    path('credit_card/', views.credit_card, name= 'credit_card'),
+
     # #Vnpay
     path('vnpay/', views.index, name= 'index'),
-    path('vnpay/payment/', views.payment, name= 'payment'),
-    path('vnpay/payment_ipn/', views.payment_ipn, name= 'payment_ipn'),
-    path('vnpay/payment_return/', views.payment_return, name= 'payment_return'),
-    path('vnpay/query/', views.query, name= 'query'),
-    path('vnpay/refund/', views.refund, name= 'refund'),
+    path('vnpay/payment/', views.payment, name= 'vnpay_payment'),
+    path('vnpay/payment_ipn/', views.payment_ipn, name= 'vnpay_payment_ipn'),
+    path('vnpay/payment_return/', views.payment_return, name= 'vnpay_payment_return'),
+    path('vnpay/query/', views.query, name= 'vnpay_query'),
+    path('vnpay/refund/', views.refund, name= 'vnpay_refund'),
 
 
 

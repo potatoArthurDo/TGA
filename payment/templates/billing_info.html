@@ -1,110 +1,80 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 d-flex">
-          <div class="card w-100">
-            <div class="card-header bg-secondary text-white text-center">
-              <h4>Order Summary</h4>
-            </div>
-  
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th class="text-center">Qty</th>
-                        <th class="text-center">Color</th>
-                        <th class="text-center">Size</th>
-                        <th class="text-end">Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for product in cart_items %}
-                      
-                      <tr>
-                        <td>{{product.product.name}}</td>
-                        
-                        <td class="text-center">{{product.quantity}}</td>
-                        <td class="text-center">{{product.color}}</td>
-                        <td class="text-center">{{product.size}}</td>
-                        <td class="text-end">{{product.product.price}} VND</td>
-                      </tr>
-                      
-                      {% endfor %}
-                    </tbody>
-      
-                    <tfoot>
-                      <tr>
-                        <td><strong>Subtotal</strong></td>
-                        
-                        <td class="text-end" colspan="4">{{totals}} VND</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Shipping</strong></td>
-                  
-                        <td class="text-end" colspan="4">0 VND</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Total</strong></td>
-                        
-                        <td class="text-end" colspan="4"><strong> {{totals}} VND</strong></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-  
-              <div class="d-grid gap-2">
-  
-                <a href="{% url 'cart_summary' %}" class="btn btn-outline-secondary">Back to Cart</a>
-              </div>
+    <div class="row justify-content-center g-4 d-flex align-items-stretch">
+      <!-- Order Summary -->
+      <div class="col-md-5">
+        <div class="card h-100">
+          <div class="card-header bg-secondary text-white text-center">
+            <h4>Order Summary</h4>
+          </div>
+          <div class="card-body d-flex flex-column">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-center">Color</th>
+                  <th class="text-center">Size</th>
+                  <th class="text-end">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in cart_items %}
+                <tr>
+                  <td>{{ product.product.name }}</td>
+                  <td class="text-center">{{ product.quantity }}</td>
+                  <td class="text-center">{{ product.color }}</td>
+                  <td class="text-center">{{ product.size }}</td>
+                  <td class="text-end">{{ product.product.price }} VND</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Subtotal</strong></td>
+                  <td colspan="4" class="text-end">{{ totals }} VND</td>
+                </tr>
+                <tr>
+                  <td><strong>Shipping</strong></td>
+                  <td colspan="4" class="text-end">0 VND</td>
+                </tr>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td colspan="4" class="text-end"><strong>{{ totals }} VND</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="d-grid gap-2 mt-auto">
+              <a href="{% url 'cart_summary' %}" class="btn btn-outline-secondary">Back to Cart</a>
             </div>
           </div>
         </div>
-      <!-- </div> -->
-      <br><br>
-    <!-- <div class="row justify-content-center"> -->
-        <div class="col-md-5 d-flex">
-            <div class="card w-100">
+      </div>
+  
+      <!-- Shipping Information -->
+      <div class="col-md-5">
+        <div class="card h-100">
           <div class="card-header bg-secondary text-white text-center">
             <h4>Shipping Information</h4>
           </div>
-          <div class="card-body">
-            <form method="POST" >
+          <div class="card-body d-flex flex-column">
+            <form method="POST">
               {% csrf_token %}
-              <div class="mb-3">
-                {{ shipping_form.shipping_full_name }}
-              </div>
-
-              <div class="mb-3">
-                {{ shipping_form.shipping_email }}
-              </div>
-
-              <div class="mb-3">
-                {{ shipping_form.shipping_address1 }}
-              </div>
-              <div class="mb-3">
-                  {{ shipping_form.shipping_address2 }}
-                </div>
-
+              <div class="mb-3">{{ shipping_form.shipping_full_name }}</div>
+              <div class="mb-3">{{ shipping_form.shipping_email }}</div>
+              <div class="mb-3">{{ shipping_form.shipping_address1 }}</div>
+              <div class="mb-3">{{ shipping_form.shipping_address2 }}</div>
               <div class="row">
-                <div class="col-md-6 mb-3">
-                  {{ shipping_form.shipping_city }}
-                </div>
-                <div class="col-md-6 mb-3">
-                  {{ shipping_form.shipping_country }}
-                </div>
+                <div class="col-md-6 mb-3">{{ shipping_form.shipping_city }}</div>
+                <div class="col-md-6 mb-3">{{ shipping_form.shipping_country }}</div>
               </div>
-
               <div class="row">
-                  <div class="col-md-6 mb-3">
-                      {{ shipping_form.shipping_ward }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      {{ shipping_form.shipping_district }}
-                    </div>
+                <div class="col-md-6 mb-3">{{ shipping_form.shipping_ward }}</div>
+                <div class="col-md-6 mb-3">{{ shipping_form.shipping_district }}</div>
               </div>
-
-              <div class="d-grid gap-2">
+              <div class="d-grid gap-2 mt-auto">
                 <a href="{% url 'checkout' %}" class="btn btn-outline-secondary">Update Shipping Information</a>
               </div>
             </form>
@@ -112,55 +82,60 @@
         </div>
       </div>
     </div>
-    <br><br>
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-          <div class="card">
-            <div class="card-header bg-primary text-white text-center">
-              <h4>Billing Information</h4>
-            </div>
+  </div>
   
-            <div class="card-body">
-              <form method="POST" action="{% url 'process_payment' %}">
+  
+
+  <!-- Payment Methods -->
+  <div class="container py-5">
+    <h2 class="text-center mb-4">Choose Your Payment Method</h2>
+    <div class="row justify-content-center g-3">
+      <!-- Payment Option 1 -->
+      <div class="col-md-4 col-lg-3">
+        <div class="card text-center shadow-sm h-100 d-flex flex-column">
+          <div class="card-body d-flex flex-column">
+            <img
+              src="https://www.svgrepo.com/show/419837/card-credit-creditcard.svg"
+              alt="Credit/Debit Card"
+              class="img-fluid mx-auto d-block mb-3"
+              style="max-height: 100px; object-fit: contain;"
+            />
+            <h6 class="card-title">Credit/Debit Card</h6>
+            <p class="card-text text-muted small">
+              Pay securely using your credit or debit card.
+            </p>
+            <form method="POST" action="{% url 'credit_card' %}">
                 {% csrf_token %}
-                <div class="mb-3">
-                  {{ billing_form.card_name }}
+                <div class="mt-auto">
+                    <button type="submit" class="btn btn-primary btn-sm">Select</button>
                 </div>
+            </form>
+            
+          </div>
+        </div>
+      </div>
   
-                <div class="mb-3">
-                    {{ billing_form.card_number }}
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        {{ billing_form.card_expiration }}
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        {{ billing_form.card_cvv }}
-                      </div>
-                </div>
-                <div class="mb-3">
-                    {{ billing_form.card_address }}
-                </div>
-  
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    {{ billing_form.card_city }}
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    {{ billing_form.card_country }}
-                  </div>
-                </div>
-  
-                
-  
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Pay Now!!</button>
-                </div>
-              </form>
+      <!-- Payment Option 2 -->
+      <div class="col-md-4 col-lg-3">
+        <div class="card text-center shadow-sm h-100 d-flex flex-column">
+          <div class="card-body d-flex flex-column">
+            <img
+              src="https://www.svgrepo.com/show/520025/v-vnpay.svg"
+              alt="VNPay"
+              class="img-fluid mx-auto d-block mb-3"
+              style="max-height: 100px; object-fit: contain;"
+            />
+            <h6 class="card-title">VNPay</h6>
+            <p class="card-text text-muted small">Pay using your VNPay account.</p>
+            <div class="mt-auto">
+              <a href="{% url 'vnpay_payment' %}" class="btn btn-primary btn-sm">Select</a>
             </div>
           </div>
         </div>
       </div>
-</div>
+    </div>
+  </div>
+  
+  
 
 {% endblock %}

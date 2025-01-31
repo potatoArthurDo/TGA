@@ -97,7 +97,7 @@ class Cart():
                 item_total = product.price * item['quantity']
                 total += item_total
             formatted_total = f"{total:,}".replace(",", ".")
-        return formatted_total
+        return total
 
     def __len__(self):
         """Return the number of unique items in the cart."""

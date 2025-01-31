@@ -3,7 +3,7 @@
 
     <h3>{{ title }}</h3>
     <div class="table-responsive">
-        <form action="{% url "payment" %}" id="create_form" method="post">
+        <form action="{% url 'vnpay_payment' %}" id="create_form" method="post">
             <div class="form-group">
                 <label for="language">Loại hàng hóa </label>
                 <select name="order_type" id="order_type" class="form-control">

@@ -2,62 +2,119 @@
 {% block content %}
 
 <div class="container py-3">
-    <h3>Order Dashboard</h3>
-    <div class="row ">
-<table class="table  table-hover table-responsive">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Order</th>
-        <th scope="col">User</th>
-        <th scope="col">Full Name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Shipping Adress</th>
-        <th scope="col">Amount Paid</th>
-        <th scope="col">Date Ordered</th>
-        <th scope="col">Shipped</th>
-        <th scope="col">Date Delivered</th>
-        <th scope="col">Status</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-{% if orders %}
-{% for order in orders %}
+    <h3 class="mb-4 text-primary text-center">Order Dashboard</h3>
 
-    <tbody>
-      <tr>
-        <th scope="row">#{{order.id}}</th>
-        <td>{{order.user}}</td>
-        <td>{{order.full_name}}</td>
-        <td>{{order.email}}</td>
-        <td>{{order.shipping_address}}</td>
-        <td>{{order.amount_paid}} VND</td>
-        <td>{{order.date_ordered}}</td>
-        <td>{{order.shipped}}</td>
-        <td>{{order.date_delivered}}</td>
-        <td class="text-center">{% if order.shipped %}
-            <form method="POST" action="{% url 'handle_order' order.id %}">
-                {% csrf_token %}
-                <input type="hidden" name="shipping_status" value="false">
-                <button type="submit" class="btn btn-danger btn-sm">Mark as Not Shipped</button>
-            </form>
+    <!-- Table for Larger Screens -->
+    <div class="d-none d-lg-block">
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Order</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Shipping Address</th>
+                    <th scope="col">Amount Paid</th>
+                    <th scope="col">Date Ordered</th>
+                    <th scope="col">Shipped</th>
+                    <th scope="col">Date Delivered</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            {% if orders %}
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <th scope="row">#{{ order.id }}</th>
+                    <td>{{ order.user }}</td>
+                    <td>{{ order.full_name }}</td>
+                    <td>{{ order.email }}</td>
+                    <td>{{ order.shipping_address }}</td>
+                    <td>{{ order.amount_paid }} VND</td>
+                    <td>{{ order.date_ordered }}</td>
+                    <td>
+                        {% if order.shipped %}
+                        <span class="badge bg-success">Yes</span>
+                        {% else %}
+                        <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.date_delivered }}</td>
+                    <td>
+                        {% if order.shipped %}
+                        <form method="POST" action="{% url 'handle_order' order.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="shipping_status" value="false">
+                            <button type="submit" class="btn btn-danger btn-sm">Mark as Not Shipped</button>
+                        </form>
+                        {% else %}
+                        <form method="POST" action="{% url 'handle_order' order.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="shipping_status" value="true">
+                            <button type="submit" class="btn btn-success btn-sm">Mark as Shipped</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'order_details' order.id %}" class="btn btn-info btn-sm" target="_blank">More Info</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
             {% else %}
-            <form method="POST"  action="{% url 'handle_order' order.id %}">
-                {% csrf_token %}
-                <input type="hidden" name="shipping_status" value="true">
-                <button type="submit" class="btn btn-success btn-sm">Mark as Shipped</button>
-            </form>
+            <tbody>
+                <tr>
+                    <td colspan="11" class="text-center text-muted">No orders found.</td>
+                </tr>
+            </tbody>
             {% endif %}
-        </td>
-        <td>
-            <a href="{% url 'order_details' order.id %}" target="_blank">More Info</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-    {% endif %}
-  </table>
-</div>
-</div>
+        </table>
+    </div>
 
+    <!-- Card Layout for Smaller Screens -->
+    <div class="d-lg-none">
+        {% if orders %}
+        {% for order in orders %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Order #{{ order.id }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>User:</strong> {{ order.user }}</p>
+                <p><strong>Full Name:</strong> {{ order.full_name }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                <p><strong>Amount Paid:</strong> {{ order.amount_paid }} VND</p>
+                <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
+                <p><strong>Shipped:</strong>
+                    {% if order.shipped %}
+                    <span class="badge bg-success">Yes</span>
+                    {% else %}
+                    <span class="badge bg-danger">No</span>
+                    {% endif %}
+                </p>
+                <p><strong>Date Delivered:</strong> {{ order.date_delivered }}</p>
+                <div class="d-flex justify-content-between">
+                    <form method="POST" action="{% url 'handle_order' order.id %}">
+                        {% csrf_token %}
+                        {% if order.shipped %}
+                        <input type="hidden" name="shipping_status" value="false">
+                        <button type="submit" class="btn btn-danger btn-sm">Mark as Not Shipped</button>
+                        {% else %}
+                        <input type="hidden" name="shipping_status" value="true">
+                        <button type="submit" class="btn btn-success btn-sm">Mark as Shipped</button>
+                        {% endif %}
+                    </form>
+                    <a href="{% url 'order_details' order.id %}" class="btn btn-info btn-sm" target="_blank">More Info</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center text-muted">No orders found.</p>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}

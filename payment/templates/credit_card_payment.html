@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <h3 class="text-center mb-4 text-primary">Credit Card Payment</h3>
+
+    <div class="row g-4">
+        <!-- Cart Items Section -->
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Your Cart</h5>
+                </div>
+                <div class="card-body">
+                    {% if cart_items %}
+                        <ul class="list-group list-group-flush">
+                            {% for item in cart_items %}
+                                <li class="list-group-item d-flex align-items-center flex-wrap">
+                                    <div class="me-3 mb-3 mb-lg-0" style="width: 100%; max-width: 80px;">
+                                        <img src="{{ item.product.image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
+                                    </div>
+                                    <div>
+                                        <p class="mb-1"><strong>{{ item.product.name }}</strong></p>
+                                        <p class="mb-0 text-muted">
+                                            Quantity: {{ item.quantity }} &bull; Price: {{ item.product.price }} VND
+                                        </p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted text-center">Your cart is empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Form Section -->
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ shipping_form.shipping_full_name.label_tag }}
+                            {{ shipping_form.shipping_full_name }}
+                        </div>
+                        <div class="mb-3">
+                            {{ shipping_form.shipping_email.label_tag }}
+                            {{ shipping_form.shipping_email }}
+                        </div>
+                        <div class="mb-3">
+                            {{ shipping_form.shipping_address1.label_tag }}
+                            {{ shipping_form.shipping_address1 }}
+                        </div>
+                        <div class="mb-3">
+                            {{ shipping_form.shipping_address2.label_tag }}
+                            {{ shipping_form.shipping_address2 }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ shipping_form.shipping_city.label_tag }}
+                                {{ shipping_form.shipping_city }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ shipping_form.shipping_country.label_tag }}
+                                {{ shipping_form.shipping_country }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ shipping_form.shipping_ward.label_tag }}
+                                {{ shipping_form.shipping_ward }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ shipping_form.shipping_district.label_tag }}
+                                {{ shipping_form.shipping_district }}
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-secondary">Update Shipping Information</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Form Section -->
+        <div class="col-lg-4">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Billing Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'process_payment' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ billing_form.card_name.label_tag }}
+                            {{ billing_form.card_name }}
+                        </div>
+                        <div class="mb-3">
+                            {{ billing_form.card_number.label_tag }}
+                            {{ billing_form.card_number }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ billing_form.card_expiration.label_tag }}
+                                {{ billing_form.card_expiration }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ billing_form.card_cvv.label_tag }}
+                                {{ billing_form.card_cvv }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ billing_form.card_address.label_tag }}
+                            {{ billing_form.card_address }}
+                        </div>
+                        <div class="mb-3">
+                            {{ billing_form.card_city.label_tag }}
+                            {{ billing_form.card_city }}
+                        </div>
+                        <div class="mb-3">
+                            {{ billing_form.card_country.label_tag }}
+                            {{ billing_form.card_country }}
+                        </div>
+                        <input type="hidden" name="payment_method" value="credit_card">
+                        <button type="submit" class="btn btn-primary btn-block">Pay Now!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

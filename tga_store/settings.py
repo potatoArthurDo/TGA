@@ -129,7 +129,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = ['static/']
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
@@ -141,8 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in the database
 
 #VNPAY CONFIG
-VNPAY_RETURN_URL = 'http://localhost:8000/payment_return'  # get from config
+VNPAY_RETURN_URL = 'http://localhost:8000/payment/vnpay/payment_return/'  # get from config
 VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'  # get from config
 VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
-VNPAY_TMN_CODE = ''  # Website ID in VNPAY System, get from config
-VNPAY_HASH_SECRET_KEY = ''  # Secret key for create checksum,get from config
+VNPAY_TMN_CODE = 'LG5CZEQI'  # Website ID in VNPAY System, get from config
+VNPAY_HASH_SECRET_KEY = 'O714JKGD3Q6ME0BJQJPXF85KEDXL3CAG'  # Secret key for create checksum,get from config

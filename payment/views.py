@@ -5,7 +5,8 @@ from .forms import ShippingAdressForm, PaymentForm, VNPaymentForm
 from django.contrib import messages
 from store.models import Profile
 import datetime
-
+import qrcode
+import os
 #vnpay
 import hashlib
 import hmac
@@ -39,9 +40,9 @@ def payment(request):
 
     if request.method == 'POST':
         # Process input data and build url payment
-        form = PaymentForm(request.POST)
+        form = VNPaymentForm(request.POST)
         if form.is_valid():
-            order_type = form.cleaned_data['order_type']
+            order_type = 'fashion'
             order_id = form.cleaned_data['order_id']
             amount = form.cleaned_data['amount']
             order_desc = form.cleaned_data['order_desc']
@@ -71,12 +72,26 @@ def payment(request):
             vnp.requestData['vnp_IpAddr'] = ipaddr
             vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
             vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
+            
+            #Generate QR code from VNPay payment URL
+            qr_code_image = qrcode.make(vnpay_payment_url)
+
+
+            # Define the path where the QR code will be saved
+            qr_code_path = f"qr/qr_code_{order_id}.png"
+            qr_code_image.save(qr_code_path)
+
+
             print(vnpay_payment_url)
-            return redirect(vnpay_payment_url)
+            # return redirect(vnpay_payment_url)
+            return render(request, "payment_page.html", {"title": "Thanh toán", "qr_code_path": qr_code_path, "payment_url": vnpay_payment_url})
+
         else:
             print("Form input not validate")
+            return render(request, "payment.html", {"title": "Thanh toán", "form": form, "error": "Invalid form input"})
     else:
         return render(request, "payment.html", {"title": "Thanh toán"})
+
 
 
 def payment_ipn(request):
@@ -316,19 +331,56 @@ def billing_info(request):
         request.session['my_shipping'] = my_shipping
 
         if request.user.is_authenticated:
+            shipping_user =  ShippingAdress.objects.get(user__id = request.user.id)
+            shipping_form = ShippingAdressForm(request.POST or None, instance=shipping_user)
             billing_form = PaymentForm()
             return render(request, 'billing_info.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
         else:
             #not logged in
             billing_form = PaymentForm()
+            shipping_form = ShippingAdressForm(request.POST or None)
             return render(request, 'billing_info.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : request.POST})
     
     else:
-        messages.error(request, 'Acess Denined')
+        messages.error(request, 'Access Denined')
+        return redirect('home')
+
+#add credit card option
+def credit_card(request):
+    if request.POST:
+        cart = Cart(request)
+        # products = cart.get_prods
+        # quantities = cart.get_quants
+        cart_items = cart.get_cart_items()
+        totals = cart.cart_total()
+        products = cart.get_prods
+
+        #Create a session with Shipping info
+
+        # my_shipping = request.POST
+        # request.session['my_shipping'] = my_shipping
+        my_shipping = request.session.get('my_shipping', None)
+
+        if request.user.is_authenticated:
+            billing_form = PaymentForm()
+            shipping_user =  ShippingAdress.objects.get(user__id = request.user.id)
+            shipping_form = ShippingAdressForm(initial= my_shipping, instance=shipping_user)
+            return render(request, 'credit_card_payment.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : shipping_form, 'products':products})
+        else:
+            #not logged in
+            billing_form = PaymentForm()
+            shipping_form = ShippingAdressForm(initial= my_shipping)
+            return render(request, 'credit_card_payment.html', {'cart_items':cart_items, 'totals':totals, 'billing_form':billing_form, 'shipping_form' : shipping_form, 'products':products})
+    
+    else:
+        messages.error(request, 'Access Denined')
         return redirect('home')
 
 def process_payment(request):
     if request.POST:
+
+        #Get the payment method customer chose
+        payment_method = request.POST.get('payment_method')
         #get the cart
         cart = Cart(request)
         # products = cart.get_prods
@@ -351,10 +403,11 @@ def process_payment(request):
         shipping_address = f"{my_shipping['shipping_address1']}, {my_shipping['shipping_address2']}, {my_shipping['shipping_ward']}, {my_shipping['shipping_district']}, {my_shipping['shipping_city']}, {my_shipping['shipping_country']}"
         amount_paid = totals
 
+
         #CReate an Order
         if request.user.is_authenticated:
             user = request.user
-            create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=amount_paid)
+            create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=amount_paid, payment_method = payment_method)
             create_order.save()
             #get the order id right away
             order_id = create_order.pk
@@ -382,12 +435,12 @@ def process_payment(request):
                 )
                 create_order_item.save()
 
-            #Clear the cart
+            # Clear the cart and delete shipping info session
             for key in list(request.session.keys()):
-                if key == "session_key":
-                    #delete that key
+                if key == "session_key" or key == "my_shipping":
                     del request.session[key]
-            
+
+
             #Get rid of the cart in the database too
             current_user = Profile.objects.filter(user__id = request.user.id)
             current_user.update(items_in_cart="")
@@ -398,7 +451,7 @@ def process_payment(request):
         else:
             # not logged in user
             #CReate order
-            create_order = Order(full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=amount_paid)
+            create_order = Order(full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=amount_paid, payment_method = payment_method)
             create_order.save()
             #get the order id right away
             order_id = create_order.pk
@@ -433,6 +486,9 @@ def process_payment(request):
             
             messages.success(request, 'Payment Completed')
             return redirect('home')
+    else:
+        messages.error(request, "Access Denied")
+        return redirect('home')
         
 def order_dashboard(request):
     
