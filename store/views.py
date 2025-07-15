@@ -142,9 +142,13 @@ def register_user(request):
 
             #Log in immediately
             user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, 'Registeration successful')
-            return redirect('update_info')
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Registration successful')
+                return redirect('update_info')
+            else:
+                messages.error(request, 'Authentication failed. Please log in manually.')
+                return redirect('login')  # or wherever you want to send them
         else:
             messages.error(request, 'Unsuccessful registration. Invalid information')
             return redirect('register_user')
